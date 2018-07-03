@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<configuration>
+    <!-- Embedded Derby confliguration -->
+    <property>
+        <name>hive.server2.enable.doAs</name>
+        <value>false</value> 
+    </property>
+    <property>
+        <name>javax.jdo.option.ConnectionDriverName</name>
+        <value>org.apache.derby.jdbc.EmbeddedDriver</value>
+    </property>
+    <property>
+        <name>javax.jdo.option.ConnectionURL</name>
+        <value>jdbc:derby:hive_metastore_db;create=true</value>
+    </property>
+    <property>
+        <name>hive.metastore.warehouse.dir</name>
+        <value>hdfs://localhost:9000/user/hive/warehouse</value>
+    </property>
+</configuration>

@@ -1,0 +1,49 @@
+version: '3'
+
+services:
+  hdfs-namenode:
+    image: hshekhar47/hdfs-namenode:0.1
+    hostname: hdfs-namenode
+    stdin_open: true
+    environment:
+      - HS_DATANODES=hdfs-datanode01 hdfs-datanode02
+    ports:
+      - "9000:9000"
+      - "8088:8088"
+      - "18080:18080"
+      - "50070:50070"
+      - "10000:10000"
+    links:
+      - hdfs-datanode01
+      - hdfs-datanode02
+      - db-mysql
+
+  hdfs-datanode01:
+    image: hshekhar47/hdfs-datanode:0.1
+    hostname: hdfs-datanode01
+    stdin_open: true
+    environment:
+      - HADOOP_NAMENODE_HOSTNAME=hdfs-namenode
+    ports:
+      - "18041:8040"
+  
+  hdfs-datanode02:
+    image: hshekhar47/hdfs-datanode:0.1
+    hostname: hdfs-datanode02
+    stdin_open: true
+    environment:
+      - HADOOP_NAMENODE_HOSTNAME=hdfs-namenode
+    ports:
+      - "18042:8040"
+
+  db-mysql:
+    image: mysql:5.7
+    hostname: db-mysql
+    stdin_open: true
+    environment:
+      - MYSQL_ROOT_PASSWORD=s3kr3t
+      - MYSQL_USER=dbadmin
+      - MYSQL_PASSWORD=s3kr3t
+      - MYSQL_DATABASE=sample
+    ports:
+      - "3306:3306"
