@@ -17,6 +17,7 @@ RUN echo "deb http://repo.mysql.com/apt/debian/ stretch mysql-5.7" >> /etc/apt/s
 		echo mysql-community-server mysql-community-server/remove-test-db select false; \
 	} | debconf-set-selections && \
     sudo apt-get install -y mysql-server --allow-unauthenticated && \
+    rm -rf /var/lib/apt/lists/* && \
     sudo chmod +x /usr/bin/bootstrap.sh
 
 EXPOSE 3306

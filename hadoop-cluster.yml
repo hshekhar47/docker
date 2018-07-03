@@ -7,6 +7,7 @@ services:
     stdin_open: true
     environment:
       - HS_DATANODES=hdfs-datanode01 hdfs-datanode02
+      - HIVE_SCHEMA_TYPE=mysql
     ports:
       - "9000:9000"
       - "8088:8088"
@@ -37,7 +38,7 @@ services:
       - "18042:8040"
 
   db-mysql:
-    image: mysql:5.7
+    image: hshekhar47/mysql:0.1
     hostname: db-mysql
     stdin_open: true
     environment:

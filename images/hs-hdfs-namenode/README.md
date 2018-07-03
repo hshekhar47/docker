@@ -72,6 +72,3 @@ LOAD DATA INPATH '/user/deployer/user_activity_20180102' OVERWRITE INTO TABLE us
  - Yarn Portal `http://hdfs-namenode:8088`
  - Spark Portal `http://hdfs-namenode:18080`
  - Beeline jdbc `jdbc:hive2://hdfs-namenode:10000` 
-
-# ToDos
-1. Should be able to set -e HIVE_SCHEMA_TYPE=mysql to connect to external mysql hive metastore.
