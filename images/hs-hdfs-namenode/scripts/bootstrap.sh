@@ -81,12 +81,35 @@ sed -i "s#localhost#$HOSTNAME#g" ${SPARK_HOME}/conf/spark-defaults.conf
 sed -i "s#localhost#$HOSTNAME#g" ${HIVE_HOME}/conf/hive-site-derby.xml 
 sed -i "s#localhost#$HOSTNAME#g" ${HIVE_HOME}/conf/hive-site-mysql.xml 
 
+if [ "${HIVE_SCHEMA_TYPE:-'derby'}" == "mysql" ];then
+    [ -z "HIVE_MYSQL_HOSTNAME" ] && { log "ERROR" "Missing environment HIVE_MYSQL_HOSTNAME"; exit 1;}
+    [ -z "HIVE_MYSQL_USER" ] && { log "ERROR" "Missing environment HIVE_MYSQL_USER"; exit 1;}
+    [ -z "HIVE_MYSQL_PASSWORD" ] && { log "ERROR" "Missing environment HIVE_MYSQL_PASSWORD"; exit 1;}
+    
+    sed -i "s#HIVE_MYSQL_HOSTNAME#${HIVE_MYSQL_HOSTNAME}#g" ${HIVE_HOME}/conf/hive-site-mysql.xml 
+    sed -i "s#HIVE_MYSQL_USER#${HIVE_MYSQL_USER}#g" ${HIVE_HOME}/conf/hive-site-mysql.xml 
+    sed -i "s#HIVE_MYSQL_PASSWORD#${HIVE_MYSQL_PASSWORD}#g" ${HIVE_HOME}/conf/hive-site-mysql.xml 
+fi
+
 log "INFO" "Formatting NameNode data directory..."
 hdfs namenode -format -force || { log "ERROR" "Could not format namenode data directory."; exit 1;}
 log "SUCCESS" "Formatted NameNode data directory successfully."
 
 [ -z "${HS_DATANODES}" ] && { log "ERROR" "Environment variable HS_DATANODES is missing."; exit 1;}
 echo "" > ${HADOOP_HOME}/etc/hadoop/slaves
+	
+schema_type=${HIVE_SCHEMA_TYPE:-"derby"}	
+case "${schema_type}" in
+    "derby")
+        mv ${HIVE_HOME}/conf/hive-site-derby.xml ${HIVE_HOME}/conf/hive-site.xml
+        ;;
+    "mysql")
+        mv ${HIVE_HOME}/conf/hive-site-mysql.xml ${HIVE_HOME}/conf/hive-site.xml
+        ;;
+esac
+
+ln -s ${HIVE_HOME}/conf/hive-site.xml ${HADOOP_HOME}/etc/hadoop/hive-site.xml
+log "SUCCESS" "${HADOOP_HOME}/conf/hive-site.xml is created."
 
 log "INFO" "Finding datanodes in network"
 for nodename in ${HS_DATANODES} 
@@ -95,12 +118,14 @@ do
     if check_node_alive ${nodename}; then
         log_as_colored_text "GREEN" "FOUND"
         echo "${nodename}" >> ${HADOOP_HOME}/etc/hadoop/slaves
+        #echo "${nodename}" >> ${SPARK_HOME}/conf/slaves
     else
         log_as_colored_text "RED" "NOT FOUND"
     fi  
     echo ""
 done 
 echo ""
+
 
 log "INFO" "Starting HDFS"
 ${HADOOP_HOME}/sbin/start-dfs.sh || { log "ERROR" "Could not start HDFS."; exit 1;}
@@ -119,29 +144,27 @@ hdfs dfs -mkdir -p /user/hive/warehouse
 hdfs dfs -chmod -R 777 /user/hive/warehouse
 if [ $? -eq 0 ]; then log "SUCCESS" "Created /user/hive/warehouse"; fi;
 
-log "INFO" "Spark jars distributions"
+
+schematool -dbType ${schema_type} -userName ${HIVE_MYSQL_USER} -passWord ${HIVE_MYSQL_PASSWORD} -initSchema
+hive --service metastore &
+if [ $? -eq 0 ];then 
+    log "SUCCESS" "Schema with type ${schema_type} is created."
+fi
 
 log "INFO" "Starting YARN"
 ${HADOOP_HOME}/sbin/start-yarn.sh || { log "ERROR" "Could not start YARN."; exit 1;}
 log "SUCCESS" "YARN Started successfully."
 
-log "INFO" "Staring spark history-server"
-${SPARK_HOME}/sbin/start-history-server.sh
+log "INFO" "Staring spark History-server"
+${SPARK_HOME}/sbin/start-history-server.sh || { log "ERROR" "Could not start History server."; exit 1;}
+log "SUCCESS" "History-server Started successfully."
 
+cd ${HIVE_HOME}
 log "INFO" "Starting HiveServer"
-cd ${HIVE_HOME}	
-schema_type=${HIVE_SCHEMA_TYPE:-"derby"}	
-case "${schema_type}" in
-    "derby")
-        mv ${HIVE_HOME}/conf/hive-site-derby.xml ${HIVE_HOME}/conf/hive-site.xml
-        ;;
-    "mysql")
-        mv ${HIVE_HOME}/conf/hive-site-mysql.xml ${HIVE_HOME}/conf/hive-site.xml
-        ;;
-esac
-schematool -dbType ${schema_type} -initSchema
-hive --service hiveserver2 &
+hive --service hiveserver2 & 
 cd -
+log "SUCCESS" "HiveServer Started successfully."
+
 log "INFO" "+------------------------------------------------------+"
 log "INFO" "| derby -> beeline -u jdbc:hive2://hdfs-namenode:10000 |"
 log "INFO" "+------------------------------------------------------+"

@@ -2,8 +2,20 @@
 <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
 <configuration>
     <property>
+        <name>hive.server2.authentication</name>
+        <value>NONE</value> 
+    </property>
+    <property>
+        <name>hive.server2.enable.doAs</name>
+        <value>true</value> 
+    </property>
+    <property>
+        <name>hive.server2.use.SSL</name>
+        <value>false</value>
+    </property>
+    <property>
         <name>javax.jdo.option.ConnectionURL</name>
-        <value>jdbc:mysql://db-mysql:3306/hive_metastore_db?createDatabaseIfNotExist=true&amp;useSSL=false</value>
+        <value>jdbc:mysql://HIVE_MYSQL_HOSTNAME:3306/hive_metastore_db?createDatabaseIfNotExist=true&amp;useSSL=false</value>
     </property>
     <property>
         <name>javax.jdo.option.ConnectionDriverName</name>
@@ -11,11 +23,23 @@
     </property>
     <property>
         <name>javax.jdo.option.ConnectionUserName</name>
-        <value>root</value>
+        <value>HIVE_MYSQL_USER</value>
     </property>
     <property>
         <name>javax.jdo.option.ConnectionPassword</name>
-        <value>s3kr3t</value>
+        <value>HIVE_MYSQL_PASSWORD</value>
+    </property>
+    <property>
+        <name>hive.metastore.uris</name>
+        <value>thrift://localhost:9083</value>
+    </property>
+    <property>
+        <name>hive.exec.local.scratchdir</name>
+        <value>/tmp/hive</value>
+    </property>
+    <property>
+        <name>hive.scratch.dir.permission</name>
+        <value>777</value>
     </property>
     <property>
         <name>hive.metastore.warehouse.dir</name>

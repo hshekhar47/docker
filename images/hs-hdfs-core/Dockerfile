@@ -44,16 +44,18 @@ RUN sudo apt-get update && \
     sudo mv /tmp/ojdbc6.jar ${INSTALL_DIR}/common-libs && \
     sudo ln -s ${INSTALL_DIR}/common-libs/ojdbc6.jar ${SQOOP_HOME}/lib/ojdbc6.jar && \
     sudo mv /tmp/mysql-connector-java-5.1.45-bin.jar ${INSTALL_DIR}/common-libs && \
-    sudo ln -s ${INSTALL_DIR}/common-libs/mysql-connector-java-5.1.45-bin.jar ${SQOOP_HOME}/lib/mysql-connector-java-5.1.45-bin.jar && \
+    sudo ln -s ${INSTALL_DIR}/common-libs/mysql-connector-java-5.1.45-bin.jar ${SQOOP_HOME}/lib/mysql-connector-java.jar && \
+    sudo ln -s ${INSTALL_DIR}/common-libs/mysql-connector-java-5.1.45-bin.jar ${SPARK_HOME}/jars/mysql-connector-java.jar && \
     sudo chown -R ${UNAME}:${GNAME} ${INSTALL_DIR} && \ 
     echo "export HADOOP_HOME=${HADOOP_HOME}" >> ~/.bashrc && \
-    echo "export HADOOP_CONF_DIR=${HADOOP_HOME}/etc/hadoop" >> ~/.bashrc && \
-    echo "export LD_LIBRARY_PATH=${HADOOP_HOME}/lib/native:${LD_LIBRARY_PATH}" >> ~/.bashrc && \
     echo "export SPARK_HOME=${SPARK_HOME}" >> ~/.bashrc && \
     echo "export SQOOP_HOME=${SQOOP_HOME}" >> ~/.bashrc && \
-    export PATH=${PATH}:${HADOOP_HOME}/bin:${SPARK_HOME}/bin:${SQOOP_HOME}/bin && \
+    echo 'export HADOOP_CONF_DIR=${HADOOP_HOME}/etc/hadoop' >> ~/.bashrc && \
+    echo 'export LD_LIBRARY_PATH=${HADOOP_HOME}/lib/native' >> ~/.bashrc && \
+    echo 'export HADOOP_CLASSPATH=/opt/common-libs/*:${HADOOP_HOME}/lib/*:${SPARK_HOME}/jars/*' >> ~/.bashrc && \
+    echo 'export PATH=${PATH}:${HADOOP_HOME}/bin:${SPARK_HOME}/bin:${SQOOP_HOME}/bin' >> ~/.bashrc && \
     sudo rm -rf /tmp/conf && \
-    sudo rm -rf /var/lib/apt/lists/*
+    sudo rm -rf /var/lib/apt/lists/* 
 
 # Spark ports
 EXPOSE 7077 6066 8080 8081

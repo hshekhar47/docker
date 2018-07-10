@@ -26,7 +26,7 @@ if [[ $MYSQL_DATABASE != "" ]]; then
         echo "GRANT ALL ON ${MYSQL_DATABASE}.* TO '${MYSQL_USER}'@'%' IDENTIFIED BY '${MYSQL_PASSWORD}';" >> $tfile
     fi
 fi
-echo "exit;" >> $tfile
+echo "exit" >> $tfile
 echo "" >> $tfile
 
 service mysql start

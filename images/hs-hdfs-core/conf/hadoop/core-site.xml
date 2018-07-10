@@ -9,4 +9,13 @@
 		<name>hadoop.http.staticuser.user</name>
 		<value>deployer</value>
 	</property>
+	<property>
+		<name>hadoop.proxyuser.deployer.groups</name>
+		<value>*</value>
+	</property>
+
+	<property>
+		<name>hadoop.proxyuser.deployer.hosts</name>
+		<value>*</value>
+	</property>
 </configuration>

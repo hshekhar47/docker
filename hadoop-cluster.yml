@@ -8,6 +8,9 @@ services:
     environment:
       - HS_DATANODES=hdfs-datanode01 hdfs-datanode02
       - HIVE_SCHEMA_TYPE=mysql
+      - HIVE_MYSQL_HOSTNAME=hive-mysql-db
+      - HIVE_MYSQL_USER=hiveadmin
+      - HIVE_MYSQL_PASSWORD=hiveadmin
     ports:
       - "9000:9000"
       - "8088:8088"
@@ -17,7 +20,8 @@ services:
     links:
       - hdfs-datanode01
       - hdfs-datanode02
-      - db-mysql
+      - hive-mysql-db
+      - db-mysql-source
 
   hdfs-datanode01:
     image: hshekhar47/hdfs-datanode:0.1
@@ -37,14 +41,28 @@ services:
     ports:
       - "18042:8040"
 
-  db-mysql:
+  hive-mysql-db:
     image: hshekhar47/mysql:0.1
-    hostname: db-mysql
+    hostname: hive-mysql-db
+    stdin_open: true
+    environment:
+      - MYSQL_ROOT_PASSWORD=s3kr3t
+      - MYSQL_USER=hiveadmin
+      - MYSQL_PASSWORD=hiveadmin
+      - MYSQL_DATABASE=hive_metastore_db
+    ports:
+      - "3307:3306"
+  
+  db-mysql-source:
+    image: hshekhar47/mysql:0.1
+    hostname: db-mysql-source
     stdin_open: true
     environment:
       - MYSQL_ROOT_PASSWORD=s3kr3t
       - MYSQL_USER=dbadmin
-      - MYSQL_PASSWORD=s3kr3t
+      - MYSQL_PASSWORD=dbadmin
       - MYSQL_DATABASE=sample
     ports:
       - "3306:3306"
+    volumes:
+      - /home/hshekhar/Projects/datasets:/share

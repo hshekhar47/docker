@@ -18,12 +18,12 @@ RUN sudo apt-get update && \
     sudo tar -xvf /tmp/apache-hive-${HIVE_VERSION}-bin.tar.gz -C ${INSTALL_DIR} && \
     sudo rm -rf /tmp/apache-hive-${HIVE_VERSION}* && \
     mv ${INSTALL_DIR}/apache-hive-${HIVE_VERSION}-bin ${INSTALL_DIR}/hive-${HIVE_VERSION} && \
-    sudo rm -rf ${INSTALL_DIR}/hive-${HIVE_VERSION}/lib/log4j-slf4j-impl-*.jar && \
-    sudo cp /tmp/conf/hive/* ${HIVE_HOME}/conf && \
-    sudo ln -s ${INSTALL_DIR}/common-libs/mysql-connector-java-5.1.45-bin.jar ${HIVE_HOME}/lib/mysql-connector-java-5.1.45-bin.jar && \
+    sudo cp /tmp/conf/hive/hive-site*xml ${HIVE_HOME}/conf && \
+    sudo ln -s ${INSTALL_DIR}/common-libs/mysql-connector-java-5.1.45-bin.jar ${HIVE_HOME}/lib/mysql-connector-java.jar && \
     sudo chown -R ${UNAME}:${GNAME} ${INSTALL_DIR} && \
     echo "export HIVE_HOME=${HIVE_HOME}" >> ~/.bashrc && \
-    export PATH=${PATH}:${HIVE_HOME}/bin && \
+    echo 'export HADOOP_CLASSPATH=${HADOOP_CLASSPATH}:${HIVE_HOME}/lib/*' >> ~/.bashrc && \
+    echo 'export PATH=${PATH}:${HIVE_HOME}/bin' >> ~/.bashrc && \
     sudo chmod +x /usr/bin/bootstrap.sh && \
     sudo rm -rf /tmp/conf && \
     sudo rm -rf /var/lib/apt/lists/*
