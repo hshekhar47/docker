@@ -1,12 +1,12 @@
 <?xml version="1.0"?>
 <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
 <configuration>
-    <property>
-        <name>mapreduce.framework.name</name>
-        <value>yarn</value>
-    </property>
-    
-    <property>
+	<property>
+		<name>mapreduce.framework.name</name>
+		<value>yarn</value>
+	</property>
+
+	<property>
 		<name>yarn.app.mapreduce.am.resource.mb</name>
 		<value>512</value>
 	</property>
@@ -19,5 +19,19 @@
 	<property>
 		<name>mapreduce.reduce.memory.mb</name>
 		<value>256</value>
+	</property>
+
+	<property>
+		<name>mapreduce.jobhistory.address</name>
+		<value>NAMENODE_HOSTNAME:10020</value>
+	</property>
+	<property>
+		<name>mapreduce.jobhistory.webapp.address</name>
+		<value>NAMENODE_HOSTNAME:19888</value>
+	</property>
+
+	<property>
+		<name>mapred.child.java.opts</name>
+		<value>-Djava.security.egd=file:/dev/../dev/urandom</value>
 	</property>
 </configuration>

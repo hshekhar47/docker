@@ -5,25 +5,11 @@ LABEL "author"="Himanshu Shekhar <himanshu.shekhar.in@gmail.com>"
 ARG UNAME=deployer
 ARG GNAME=hadoop
 
-ARG HIVE_VERSION=2.3.3
+ENV INSTALL_DIR=/opt
 
-ENV INSTALL_DIR=/opt \
-    HIVE_HOME=/opt/hive-2.3.3
-
-COPY apache-hive-${HIVE_VERSION}-bin.tar.gz /tmp
-ADD conf /tmp/conf
 ADD scripts/ /usr/bin/ 
 
 RUN sudo apt-get update && \
-    sudo tar -xvf /tmp/apache-hive-${HIVE_VERSION}-bin.tar.gz -C ${INSTALL_DIR} && \
-    sudo rm -rf /tmp/apache-hive-${HIVE_VERSION}* && \
-    mv ${INSTALL_DIR}/apache-hive-${HIVE_VERSION}-bin ${INSTALL_DIR}/hive-${HIVE_VERSION} && \
-    sudo cp /tmp/conf/hive/hive-site*xml ${HIVE_HOME}/conf && \
-    sudo ln -s ${INSTALL_DIR}/common-libs/mysql-connector-java-5.1.45-bin.jar ${HIVE_HOME}/lib/mysql-connector-java.jar && \
-    sudo chown -R ${UNAME}:${GNAME} ${INSTALL_DIR} && \
-    echo "export HIVE_HOME=${HIVE_HOME}" >> ~/.bashrc && \
-    echo 'export HADOOP_CLASSPATH=${HADOOP_CLASSPATH}:${HIVE_HOME}/lib/*' >> ~/.bashrc && \
-    echo 'export PATH=${PATH}:${HIVE_HOME}/bin' >> ~/.bashrc && \
     sudo chmod +x /usr/bin/bootstrap.sh && \
     sudo rm -rf /tmp/conf && \
     sudo rm -rf /var/lib/apt/lists/*

@@ -7,8 +7,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 ARG UNAME=deployer
 ARG GNAME=sysadmin 
 
-ENV JAVA_HOME=/usr/lib/jvm/jdk1.8.0_172 \
-	PATH=${PATH}:/usr/lib/jvm/jdk1.8.0_172/bin
+ENV JAVA_HOME=/usr/lib/jvm/jdk1.8.0_172
 
 COPY server-jre-8u172-linux-x64.tar.gz /tmp/
 
@@ -18,8 +17,10 @@ RUN apt-get update && \
 	tar -xvf /tmp/server-jre-8u172-linux-x64.tar.gz -C /usr/lib/jvm && \
     rm -rf /tmp/server-jre-8u172-linux-x64.tar.gz && \
     rm -rf /var/lib/apt/lists/* && \
-    echo "export JAVA_HOME=${JAVA_HOME}" >> /etc/environment
-
+    echo "export JAVA_HOME=${JAVA_HOME}" >> /etc/environment && \
+    echo "export JAVA_HOME=${JAVA_HOME}" >> /home/${UNAME}/.bashrc && \
+    echo "export PATH=${PATH}:${JAVA_HOME}/bin" >>  /home/${UNAME}/.bashrc
+    
 USER ${UNAME}
 WORKDIR /home/${UNAME}
 

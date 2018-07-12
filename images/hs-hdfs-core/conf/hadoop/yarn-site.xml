@@ -8,7 +8,7 @@
 
 	<property>
 		<name>yarn.resourcemanager.hostname</name>
-		<value>localhost</value>
+		<value>NAMENODE_HOSTNAME</value>
 	</property>
 
 	<property>

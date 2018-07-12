@@ -11,7 +11,7 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends sudo curl ssh figlet && \
     rm -rf /var/lib/apt/lists/* && \
     groupadd ${GNAME} && \
-    useradd -m -G ${GNAME} -s /bin/bash ${UNAME} && \
+    useradd -m -g ${GNAME} -s /bin/bash ${UNAME} && \
     echo "${UNAME} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers && \
     sed -i 's/PermitRootLogin without-password/PermitRootLogin yes/' /etc/ssh/sshd_config && \
     sed -i 's/#   StrictHostKeyChecking ask/StrictHostKeyChecking no/' /etc/ssh/ssh_config

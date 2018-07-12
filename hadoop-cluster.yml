@@ -1,27 +1,41 @@
 version: '3'
 
 services:
+  hdfs-edgenode:
+    image: hshekhar47/hdfs-edgenode:0.1
+    hostname: hdfs-edgenode
+    stdin_open: true
+    environment:
+      - HADOOP_NAMENODE_HOSTNAME=hdfs-namenode
+      - HIVE_SCHEMA_TYPE=mysql
+      - HIVE_MYSQL_HOSTNAME=hive-metastore-db
+      - HIVE_MYSQL_USER=hiveadmin
+      - HIVE_MYSQL_PASSWORD=hiveadmin
+    ports:
+      - "10000:10000"
+    links:
+      - hdfs-namenode
+      - hive-metastore-db
+      - db-external
+    depends_on:
+      - hdfs-namenode
+      - hive-metastore-db
+      - db-external
+      
   hdfs-namenode:
     image: hshekhar47/hdfs-namenode:0.1
     hostname: hdfs-namenode
     stdin_open: true
     environment:
-      - HS_DATANODES=hdfs-datanode01 hdfs-datanode02
-      - HIVE_SCHEMA_TYPE=mysql
-      - HIVE_MYSQL_HOSTNAME=hive-mysql-db
-      - HIVE_MYSQL_USER=hiveadmin
-      - HIVE_MYSQL_PASSWORD=hiveadmin
+      - HADOOP_DATANODES=hdfs-datanode01 hdfs-datanode02
     ports:
-      - "9000:9000"
+      - "19888:19888"
       - "8088:8088"
-      - "18080:18080"
+      - "8080:8080"
       - "50070:50070"
-      - "10000:10000"
     links:
       - hdfs-datanode01
       - hdfs-datanode02
-      - hive-mysql-db
-      - db-mysql-source
 
   hdfs-datanode01:
     image: hshekhar47/hdfs-datanode:0.1
@@ -30,7 +44,7 @@ services:
     environment:
       - HADOOP_NAMENODE_HOSTNAME=hdfs-namenode
     ports:
-      - "18041:8040"
+      - "500751:50075"
   
   hdfs-datanode02:
     image: hshekhar47/hdfs-datanode:0.1
@@ -39,11 +53,11 @@ services:
     environment:
       - HADOOP_NAMENODE_HOSTNAME=hdfs-namenode
     ports:
-      - "18042:8040"
+      - "500752:50075"
 
-  hive-mysql-db:
+  hive-metastore-db:
     image: hshekhar47/mysql:0.1
-    hostname: hive-mysql-db
+    hostname: hive-metastore-db
     stdin_open: true
     environment:
       - MYSQL_ROOT_PASSWORD=s3kr3t
@@ -53,9 +67,9 @@ services:
     ports:
       - "3307:3306"
   
-  db-mysql-source:
+  db-external:
     image: hshekhar47/mysql:0.1
-    hostname: db-mysql-source
+    hostname: db-external
     stdin_open: true
     environment:
       - MYSQL_ROOT_PASSWORD=s3kr3t

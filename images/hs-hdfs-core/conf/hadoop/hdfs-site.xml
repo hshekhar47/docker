@@ -3,11 +3,11 @@
 <configuration>
 	<property>
 		<name>dfs.namenode.name.dir</name>
-		<value>/home/deployer/data/namenode</value>
+		<value>file:///home/deployer/hdfs/namenode</value>
 	</property>
 	<property>
 		<name>dfs.datanode.data.dir</name>
-		<value>/home/deployer/data/datanode</value>
+		<value>file:///home/deployer/hdfs/datanode</value>
 	</property>
 	<property>
 		<name>fs.permissions.umask-mode</name>
