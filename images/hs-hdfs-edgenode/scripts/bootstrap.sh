@@ -58,6 +58,7 @@ log "SUCCESS" "Started SSH daemon successfully."
 sed -i "s#NAMENODE_HOSTNAME#$HADOOP_NAMENODE_HOSTNAME#g" ${HADOOP_HOME}/etc/hadoop/core-site.xml
 sed -i "s#NAMENODE_HOSTNAME#$HADOOP_NAMENODE_HOSTNAME#g" ${HADOOP_HOME}/etc/hadoop/yarn-site.xml
 sed -i "s#NAMENODE_HOSTNAME#$HADOOP_NAMENODE_HOSTNAME#g" ${HADOOP_HOME}/etc/hadoop/mapred-site.xml
+sed -i "s#NAMENODE_HOSTNAME#$HADOOP_NAMENODE_HOSTNAME#g" ${HBASE_HOME}/conf/hbase-site.xml
 sed -i "s#NAMENODE_HOSTNAME#$HADOOP_NAMENODE_HOSTNAME#g" ${HIVE_HOME}/conf/hive-site-derby.xml 
 sed -i "s#NAMENODE_HOSTNAME#$HADOOP_NAMENODE_HOSTNAME#g" ${HIVE_HOME}/conf/hive-site-mysql.xml 
 

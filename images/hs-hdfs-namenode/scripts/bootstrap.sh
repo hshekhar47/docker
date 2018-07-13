@@ -56,6 +56,7 @@ log "SUCCESS" "Started SSH daemon successfully."
 export HOSTNAME=`hostname`
 sed -i "s#NAMENODE_HOSTNAME#$HOSTNAME#g" ${HADOOP_HOME}/etc/hadoop/core-site.xml
 sed -i "s#NAMENODE_HOSTNAME#$HOSTNAME#g" ${HADOOP_HOME}/etc/hadoop/yarn-site.xml
+sed -i "s#NAMENODE_HOSTNAME#$HOSTNAME#g" ${HBASE_HOME}/conf/hbase-site.xml
 sed -i "s#NAMENODE_HOSTNAME#0.0.0.0#g" ${HADOOP_HOME}/etc/hadoop/mapred-site.xml
 
 log "INFO" "Formatting NameNode data directory..."
@@ -65,6 +66,7 @@ log "SUCCESS" "Formatted NameNode data directory successfully."
 [ -z "${HADOOP_DATANODES}" ] && { log "ERROR" "Environment variable HS_DATANODES is missing.";}
 echo "" > ${HADOOP_HOME}/etc/hadoop/slaves
 echo "" > ${SPARK_HOME}/conf/slaves
+echo "" > ${HBASE_HOME}/conf/regionservers
 
 log "INFO" "Finding datanodes in network"
 for nodename in ${HADOOP_DATANODES} 
@@ -74,6 +76,7 @@ do
         log_as_colored_text "GREEN" "FOUND"
         echo "${nodename}" >> ${HADOOP_HOME}/etc/hadoop/slaves
         echo "${nodename}" >> ${SPARK_HOME}/conf/slaves
+        echo "${nodename}" >> ${HBASE_HOME}/conf/regionservers
     else
         log_as_colored_text "RED" "NOT FOUND"
     fi  
@@ -105,6 +108,10 @@ log "SUCCESS" "Job-History server started successfully."
 log "INFO" "Starting Spark"
 $SPARK_HOME/sbin/start-all.sh
 log "SUCCESS" "Spark started successfully."
+
+log "INFO" "Starting hbase"
+$HBASE_HOME/bin/start-hbase.sh || { log "ERROR" "Could not start Job-History server.";}
+log "SUCCESS" "HBASE started successfully"
 
 log "SUCCESS" "All services on NameNode ${HOSTNAME} started successfully."
 ${HADOOP_HOME}/bin/hdfs dfsadmin -report

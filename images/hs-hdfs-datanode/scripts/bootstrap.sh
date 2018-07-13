@@ -47,6 +47,8 @@ log "SUCCESS" "Started SSH daemon successfully."
 [ -z "${HADOOP_NAMENODE_HOSTNAME}" ] && { log "ERROR" "Environment variable HADOOP_NAMENODE_HOSTNAME is missing."; exit 1;}
 sed -i "s#NAMENODE_HOSTNAME#$HADOOP_NAMENODE_HOSTNAME#g" ${HADOOP_HOME}/etc/hadoop/core-site.xml
 sed -i "s#NAMENODE_HOSTNAME#$HADOOP_NAMENODE_HOSTNAME#g" ${HADOOP_HOME}/etc/hadoop/yarn-site.xml
+sed -i "s#NAMENODE_HOSTNAME#$HADOOP_NAMENODE_HOSTNAME#g" ${HADOOP_HOME}/etc/hadoop/mapred-site.xml
+sed -i "s#NAMENODE_HOSTNAME#$HADOOP_NAMENODE_HOSTNAME#g" ${HBASE_HOME}/conf/hbase-site.xml
 
 log "SUCCESS" "All services on Datanode started successfully."
 

@@ -1,0 +1,2 @@
+export JAVA_HOME=${JAVA_HOME}
+export HBASE_MANAGES_ZK=true

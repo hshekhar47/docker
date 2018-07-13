@@ -29,10 +29,11 @@ services:
     environment:
       - HADOOP_DATANODES=hdfs-datanode01 hdfs-datanode02
     ports:
+      - "50070:50070"
+      - "16010:16010"
       - "19888:19888"
       - "8088:8088"
       - "8080:8080"
-      - "50070:50070"
     links:
       - hdfs-datanode01
       - hdfs-datanode02
@@ -44,7 +45,7 @@ services:
     environment:
       - HADOOP_NAMENODE_HOSTNAME=hdfs-namenode
     ports:
-      - "500751:50075"
+      - "50175:50075"
   
   hdfs-datanode02:
     image: hshekhar47/hdfs-datanode:0.1
@@ -53,7 +54,7 @@ services:
     environment:
       - HADOOP_NAMENODE_HOSTNAME=hdfs-namenode
     ports:
-      - "500752:50075"
+      - "50275:50075"
 
   hive-metastore-db:
     image: hshekhar47/mysql:0.1

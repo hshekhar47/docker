@@ -4,7 +4,7 @@ VERSION=0.1
 
 BUILD_DIR=$(dirname "$(readlink -fm "$0")")
 
-BUILD_RESOURCES=("hadoop-2.7.6.tar.gz spark-2.3.0-bin-hadoop2.7.tgz sqoop-1.4.7.bin__hadoop-2.6.0.tar.gz ojdbc6.jar mysql-connector-java-5.1.45-bin.jar") 
+BUILD_RESOURCES=("hadoop-2.7.6.tar.gz spark-2.3.0-bin-hadoop2.7.tgz sqoop-1.4.7.bin__hadoop-2.6.0.tar.gz hbase-2.0.1-bin.tar.gz ojdbc6.jar mysql-connector-java-5.1.45-bin.jar") 
 
 pre_build() {
     RESOURCES_DIR=$(dirname "${BUILD_DIR}")/resources
