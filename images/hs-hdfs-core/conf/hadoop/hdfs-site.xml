@@ -10,6 +10,10 @@
 		<value>file:///home/deployer/hdfs/datanode</value>
 	</property>
 	<property>
+		<name>dfs.namenode.checkpoint.dir</name>
+		<value>file:///home/deployer/hdfs/namesecondary</value>
+	</property>
+	<property>
 		<name>fs.permissions.umask-mode</name>
 		<value>002</value>
 	</property>

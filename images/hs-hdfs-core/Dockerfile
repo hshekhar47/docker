@@ -39,6 +39,7 @@ RUN sudo apt-get update && \
     sudo tar -xvf /tmp/hbase-${HBASE_VERSION}-bin.tar.gz -C ${INSTALL_DIR} && \
     sudo rm -rf /tmp/hbase-${HBASE_VERSION}-bin.tar.gz && \
     sudo cp /tmp/conf/hbase/hbase-*.xml ${HBASE_HOME}/conf/ && \
+    sudo cp /tmp/conf/spark/spark-defaults.conf ${SPARK_HOME}/conf/ && \
     sudo chown -R ${UNAME}:${GNAME} ${INSTALL_DIR} && \ 
     echo "export HADOOP_HOME=${HADOOP_HOME}" >> ~/.bashrc && \
     echo 'export HADOOP_MAPRED_HOME=${HADOOP_HOME}' >> ~/.bashrc && \

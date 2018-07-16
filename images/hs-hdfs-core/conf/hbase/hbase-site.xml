@@ -11,7 +11,7 @@
     </property>
     <property>
         <name>hbase.zookeeper.property.dataDir</name>
-        <value>file:///home/deployer/zookeeper</value>
+        <value>/home/deployer/zookeeper</value>
     </property>
     <property>
         <name>hbase.zookeeper.quorum</name>

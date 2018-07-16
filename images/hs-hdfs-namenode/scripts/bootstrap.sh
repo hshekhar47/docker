@@ -56,8 +56,9 @@ log "SUCCESS" "Started SSH daemon successfully."
 export HOSTNAME=`hostname`
 sed -i "s#NAMENODE_HOSTNAME#$HOSTNAME#g" ${HADOOP_HOME}/etc/hadoop/core-site.xml
 sed -i "s#NAMENODE_HOSTNAME#$HOSTNAME#g" ${HADOOP_HOME}/etc/hadoop/yarn-site.xml
+sed -i "s#NAMENODE_HOSTNAME#0.0.0.0#g"   ${HADOOP_HOME}/etc/hadoop/mapred-site.xml
+sed -i "s#NAMENODE_HOSTNAME#$HOSTNAME#g" ${SPARK_HOME}/conf/spark-defaults.conf
 sed -i "s#NAMENODE_HOSTNAME#$HOSTNAME#g" ${HBASE_HOME}/conf/hbase-site.xml
-sed -i "s#NAMENODE_HOSTNAME#0.0.0.0#g" ${HADOOP_HOME}/etc/hadoop/mapred-site.xml
 
 log "INFO" "Formatting NameNode data directory..."
 ${HADOOP_HOME}/bin/hdfs namenode -format -force || { log "ERROR" "Could not format namenode data directory."; exit 1;}
@@ -91,8 +92,17 @@ log "SUCCESS" "HDFS Started successfully."
 
 log "INFO" "Creating filesystems"
 ${HADOOP_HOME}/bin/hdfs dfs -mkdir -p /tmp
-${HADOOP_HOME}/bin/hdfs dfs -chmod -R 777 /tmp
+${HADOOP_HOME}/bin/hdfs dfs -chmod -R 1777 /tmp
 if [ $? -eq 0 ];then log "SUCCESS" "Created /tmp"; fi;
+
+${HADOOP_HOME}/bin/hdfs dfs -mkdir -p /var/log/yarn/apps
+${HADOOP_HOME}/bin/hdfs dfs -chmod -R 1777 /var/log/yarn
+if [ $? -eq 0 ];then log "SUCCESS" "Created /var/log/yarn"; fi;
+
+${HADOOP_HOME}/bin/hdfs dfs -mkdir -p /spark-logs
+${HADOOP_HOME}/bin/hdfs dfs -chmod -R 1777 /spark-logs
+if [ $? -eq 0 ];then log "SUCCESS" "Created /spark-logs"; fi;
+
 ${HADOOP_HOME}/bin/hdfs dfs -mkdir -p /user/deployer 
 if [ $? -eq 0 ]; then log "SUCCESS" "Created /user/deployer"; fi; 
 
