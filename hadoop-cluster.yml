@@ -11,8 +11,6 @@ services:
       - HIVE_MYSQL_HOSTNAME=hive-metastore-db
       - HIVE_MYSQL_USER=hiveadmin
       - HIVE_MYSQL_PASSWORD=hiveadmin
-    ports:
-      - "10000:10000"
     links:
       - hdfs-namenode
       - hive-metastore-db
@@ -29,11 +27,12 @@ services:
     environment:
       - HADOOP_DATANODES=hdfs-datanode01 hdfs-datanode02
     ports:
-      - "50070:50070"
-      - "16010:16010"
-      - "19888:19888"
-      - "8088:8088"
-      - "8080:8080"
+      - "50070:50070"     # HDFS UI 
+      - "19888:19888"     # Map Reduce Job History UI
+      - "16010:16010"     # HBASE UI
+      - "8088:8088"       # Yarn UI
+      - "8080:8080"       # Spark Master UI
+      - "4040:4040"       # Spark Application UI
     links:
       - hdfs-datanode01
       - hdfs-datanode02

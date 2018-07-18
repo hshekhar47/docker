@@ -19,7 +19,7 @@ COPY conf /tmp/conf/
 ADD scripts/ /usr/bin/
 
 RUN sudo apt-get update && \
-    sudo chmod +x /usr/bin/bootstrap.sh && \
+    sudo chmod +x /usr/bin/*.sh && \
     sudo tar -xvf /tmp/apache-hive-${HIVE_VERSION}-bin.tar.gz -C ${INSTALL_DIR} && \
     sudo rm -rf /tmp/apache-hive-*tar.gz && \
     mv ${INSTALL_DIR}/apache-hive-${HIVE_VERSION}-bin ${HIVE_HOME} && \

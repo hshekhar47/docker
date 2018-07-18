@@ -7,16 +7,16 @@ Edgenode nodes are the interface between the Hadoop cluster and the outside netw
 <img src='../resources/icons/spark.png' height='100'>
 Spark provides a simple and expressive programming model that supports a wide range of applications, including ETL, machine learning, stream processing, and graph computation.
 
-Once cluster is up spark histry server can be acccessible over `http://localhost:18080`
+Once cluster is up spark history server can be acccessed over `http://hdfs-namenode:8080`
 
 ## Spark Shell
 ```bash
 spark-shell
 ```
 ## Sprk Submit
+Run below command and verify the spark jobs on http://hdfs-namenode:8080
 ```bash
 spark-submit \
-    --deploy-mode client \
     --class org.apache.spark.examples.SparkPi \
     $SPARK_HOME/examples/jars/spark-examples_2.11-2.3.0.jar 10
 ```
@@ -37,7 +37,7 @@ hive> show databases;
 ## Beeline shell
 ##### Connect to database using beeline
 ```bash
-deployer@hdfs-namenode:~$ beeline -u 'jdbc:hive2://localhost:10000'
+deployer@hdfs-namenode:~$ beeline -u 'jdbc:hive2://hdfs-edgenode:10000'
 0: jdbc:hive2://localhost:10000>
 ```
 
@@ -138,9 +138,9 @@ sqoop export \
 
 # Interfaces
  - Hadoop Portal `http://hdfs-namenode:50070`
- - Yarn Portal `http://hdfs-namenode:8088`
- - Spark Portal `http://hdfs-namenode:18080`
- - Beeline jdbc `jdbc:hive2://hdfs-namenode:10000` 
+ - Yarn Job History Portal `http://hdfs-namenode:8088`
+ - MapReduce Job History Portal `http://hdfs-namenode:19888`
+ - Spark Master Web UI `http://hdfs-namenode:8080` 
 
  # References
  - [Configure MySQL as Hive Metastore](https://dwbi.org/etl/bigdata/190-configuring-mysql-as-hive-metastore)
