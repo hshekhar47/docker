@@ -31,6 +31,14 @@
 	</property>
 
 	<property>
+		<name>mapreduce.jobhistory.done-dir</name>
+		<value>/mr-history/done</value>
+	</property>
+	<property>
+		<name>mapreduce.jobhistory.intermediate-done-dir</name>
+		<value>/mr-history/tmp</value>
+	</property>
+	<property>
 		<name>mapred.child.java.opts</name>
 		<value>-Djava.security.egd=file:/dev/../dev/urandom</value>
 	</property>

@@ -137,10 +137,7 @@ sqoop export \
 
 
 # Interfaces
- - Hadoop Portal `http://hdfs-namenode:50070`
- - Yarn Job History Portal `http://hdfs-namenode:8088`
- - MapReduce Job History Portal `http://hdfs-namenode:19888`
- - Spark Master Web UI `http://hdfs-namenode:8080` 
+
 
  # References
  - [Configure MySQL as Hive Metastore](https://dwbi.org/etl/bigdata/190-configuring-mysql-as-hive-metastore)

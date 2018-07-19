@@ -10,7 +10,7 @@ ENV INSTALL_DIR=/opt
 ADD scripts/ /usr/bin/ 
 
 RUN sudo apt-get update && \
-    sudo chmod +x /usr/bin/bootstrap.sh && \
+    sudo chmod +x /usr/bin/*.sh && \
     sudo rm -rf /tmp/conf && \
     sudo rm -rf /var/lib/apt/lists/*
 

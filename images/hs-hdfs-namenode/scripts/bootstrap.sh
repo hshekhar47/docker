@@ -93,35 +93,40 @@ log "SUCCESS" "HDFS Started successfully."
 log "INFO" "Creating filesystems"
 ${HADOOP_HOME}/bin/hdfs dfs -mkdir -p /tmp
 ${HADOOP_HOME}/bin/hdfs dfs -chmod -R 1777 /tmp
-if [ $? -eq 0 ];then log "SUCCESS" "Created /tmp"; fi;
+if [ $? -eq 0 ];then log "SUCCESS" "Created hdfs://tmp"; fi;
 
 ${HADOOP_HOME}/bin/hdfs dfs -mkdir -p /var/log/yarn/apps
 ${HADOOP_HOME}/bin/hdfs dfs -chmod -R 1777 /var/log/yarn
-if [ $? -eq 0 ];then log "SUCCESS" "Created /var/log/yarn"; fi;
+if [ $? -eq 0 ];then log "SUCCESS" "Created hdfs://var/log/yarn"; fi;
+
+${HADOOP_HOME}/bin/hdfs dfs -mkdir -p /mr-history/temp
+${HADOOP_HOME}/bin/hdfs dfs -mkdir -p /mr-history/done
+${HADOOP_HOME}/bin/hdfs dfs -chmod -R 1777 /mr-history/
+if [ $? -eq 0 ];then log "SUCCESS" "Created hdfs://mr-history"; fi;
 
 ${HADOOP_HOME}/bin/hdfs dfs -mkdir -p /spark-logs
 ${HADOOP_HOME}/bin/hdfs dfs -chmod -R 1777 /spark-logs
-if [ $? -eq 0 ];then log "SUCCESS" "Created /spark-logs"; fi;
+if [ $? -eq 0 ];then log "SUCCESS" "Created hdfs://spark-logs"; fi;
 
 ${HADOOP_HOME}/bin/hdfs dfs -mkdir -p /user/deployer 
-if [ $? -eq 0 ]; then log "SUCCESS" "Created /user/deployer"; fi; 
+if [ $? -eq 0 ]; then log "SUCCESS" "Created hdfs://user/deployer"; fi; 
 
 log "INFO" "Starting YARN"
 ${HADOOP_HOME}/sbin/start-yarn.sh || { log "ERROR" "Could not start YARN."; exit 1;}
 log "SUCCESS" "YARN started successfully."
 
-log "INFO" "Starting Job-History server"
+log "INFO" "Starting Map Reduce Job-History server"
 sed -i "s#USER#UNAME#g" ${HADOOP_HOME}/sbin/mr-jobhistory-daemon.sh
 ${HADOOP_HOME}/sbin/mr-jobhistory-daemon.sh start historyserver || { log "ERROR" "Could not start Job-History server."; exit 1;}
 log "SUCCESS" "Job-History server started successfully."
 
-log "INFO" "Starting Spark"
-$SPARK_HOME/sbin/start-all.sh
-log "SUCCESS" "Spark started successfully."
+#log "INFO" "Starting Spark"
+#$SPARK_HOME/sbin/start-all.sh
+#log "SUCCESS" "Spark started successfully."
 
-log "INFO" "Starting hbase"
-$HBASE_HOME/bin/start-hbase.sh || { log "ERROR" "Could not start Job-History server.";}
-log "SUCCESS" "HBASE started successfully"
+#log "INFO" "Starting hbase"
+#$HBASE_HOME/bin/start-hbase.sh || { log "ERROR" "Could not start Job-History server.";}
+#log "SUCCESS" "HBASE started successfully"
 
 log "SUCCESS" "All services on NameNode ${HOSTNAME} started successfully."
 ${HADOOP_HOME}/bin/hdfs dfsadmin -report

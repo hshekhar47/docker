@@ -31,8 +31,8 @@ services:
       - "19888:19888"     # Map Reduce Job History UI
       - "16010:16010"     # HBASE UI
       - "8088:8088"       # Yarn UI
-      - "8080:8080"       # Spark Master UI
-      - "4040:4040"       # Spark Application UI
+      - "18080:18080"     # Spark Master UI       
+      - "4040:4040"
     links:
       - hdfs-datanode01
       - hdfs-datanode02
@@ -45,6 +45,7 @@ services:
       - HADOOP_NAMENODE_HOSTNAME=hdfs-namenode
     ports:
       - "50175:50075"
+      - "8142:8042"
   
   hdfs-datanode02:
     image: hshekhar47/hdfs-datanode:0.1
@@ -54,6 +55,7 @@ services:
       - HADOOP_NAMENODE_HOSTNAME=hdfs-namenode
     ports:
       - "50275:50075"
+      - "8242:8042"
 
   hive-metastore-db:
     image: hshekhar47/mysql:0.1

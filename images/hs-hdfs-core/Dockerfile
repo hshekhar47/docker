@@ -15,7 +15,6 @@ ENV INSTALL_DIR=/opt \
     SPARK_HOME=/opt/spark-2.3.0 \
     HBASE_HOME=/opt/hbase-2.0.1
 
-#COPY http://www.apache.org/dyn/closer.cgi/hadoop/common/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}.tar.gz /tmp/
 COPY hadoop-${HADOOP_VERSION}.tar.gz /tmp/
 COPY spark-${SPARK_VERSION}-bin-hadoop2.7.tgz /tmp/
 COPY hbase-${HBASE_VERSION}-bin.tar.gz /tmp/
@@ -23,6 +22,11 @@ COPY ojdbc6.jar /tmp/
 COPY mysql-connector-java-5.1.45-bin.jar /tmp/
 
 ADD conf /tmp/conf
+
+# RUN curl "http://www.apache.org/dyn/closer.cgi/hadoop/common/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}.tar.gz" -o /tmp/hadoop-${HADOOP_VERSION}.tar.gz && \
+#   curl "https://archive.apache.org/dist/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop2.7.tgz" -o /tmp/spark-${SPARK_VERSION}-bin-hadoop2.7.tgz && \
+#   curl "http://redrockdigimark.com/apachemirror/hbase/${HBASE_VERSION}/hbase-${HBASE_VERSION}-bin.tar.gz" -o /tmp/hbase-${HBASE_VERSION}-bin.tar.gz
+
 
 RUN sudo apt-get update && \
     sudo groupadd ${GNAME} && \
@@ -55,7 +59,9 @@ RUN sudo apt-get update && \
     echo 'export PATH=${PATH}:${HADOOP_HOME}/bin:${HADOOP_HOME}/sbin:${SPARK_HOME}/bin:${HBASE_HOME}/bin' >> ~/.bashrc && \
     echo 'export JAVA_LIBRARY_PATH=${JAVA_LIBRARY_PATH}:${HADOOP_HOME}/lib/native' >> ~/.bashrc && \
     sudo rm -rf /tmp/conf && \
-    sudo rm -rf /var/lib/apt/lists/* 
+    sudo rm -rf /var/lib/apt/lists/* && \
+    sudo mkdir -p /var/log/yarn && \
+    sudo chown -R ${UNAME}:${GNAME} /var/log
 
 # Spark ports
 EXPOSE 7077 6066 8080 8081

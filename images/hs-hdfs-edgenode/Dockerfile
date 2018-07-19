@@ -15,8 +15,10 @@ ENV INSTALL_DIR=/opt \
 COPY apache-hive-${HIVE_VERSION}-bin.tar.gz /tmp/
 COPY sqoop-${SQOOP_VERSION}.bin__hadoop-2.6.0.tar.gz /tmp/
 COPY conf /tmp/conf/
-
 ADD scripts/ /usr/bin/
+
+# RUN "http://redrockdigimark.com/apachemirror/hive/hive-${HIVE_VERSION}/apache-hive-${HIVE_VERSION}-bin.tar.gz" -o /tmp/apache-hive-${HIVE_VERSION}-bin.tar.gz && \
+#   curl "http://redrockdigimark.com/apachemirror/sqoop/${SQOOP_VERSION}/sqoop-${SQOOP_VERSION}.bin__hadoop-2.6.0.tar.gz" -o /tmp/sqoop-${SQOOP_VERSION}.tar.gz
 
 RUN sudo apt-get update && \
     sudo chmod +x /usr/bin/*.sh && \
