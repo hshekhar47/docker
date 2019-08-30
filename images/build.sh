@@ -1,90 +1,81 @@
-#!/bin/bash
+BUILD_HOME_DIR=$(dirname "$(readlink -fm "$0")")
 
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-CYAN='\033[0;36m'
-NC='\033[0m' # No Color
+ARG_SRC_PATH=""
+ARG_TAG=""
+ARG_VERSION=""
 
-BUILD_DIR=$(dirname "$(readlink -fm "$0")")
+source ${BUILD_HOME_DIR}/scripts/env.sh --source-only
+source ${BUILD_HOME_DIR}/scripts/core.sh --source-only
 
-log_as_colored_text() {
-    case "$1" in
-        "RED")
-            printf "${RED}$2 ${NC}";;
-        "GREEN")
-            printf "${GREEN}$2 ${NC}";;
-        *)
-            printf "${CYAN}$2 ${NC}";;
-    esac
+function infer_build_tag_from_src_path() {
+    tag_name=$(basename $ARG_SRC_PATH)
+    echo ${tag_name#"hs-"}
 }
 
-log() {
-    timestamp=`date '+%Y-%m-%d %H:%M:%S'`
-    case "$1" in
-        "SUCCESS")
-            log_as_colored_text "GREEN" "${timestamp} [INFO ] $2";;
-        "ERROR")
-            log_as_colored_text "RED" "${timestamp} [ERROR ] $2";;
-        "INFO")
-            log_as_colored_text "CYAN" "${timestamp} [INFO ] $2";;
-        *)
-            log_as_colored_text "CYAN" "${timestamp} [INFO ] $2";;
-    esac
+function build_image() {
+    build_cmd="docker build "
+    if [[ ! -z "${ARG_TAG}" ]]; then 
+        build_cmd="${build_cmd} -t ${DEFAULT_IMAGE_GROUP}/${ARG_TAG}:${DEFAULT_IMAGE_VERSION}"; 
+    else
+        ARG_TAG=$(infer_build_tag_from_src_path)
+        build_cmd="${build_cmd} -t ${DEFAULT_IMAGE_GROUP}/${ARG_TAG}:${DEFAULT_IMAGE_VERSION}"
+    fi
+    if [[ ! -z "${ARG_VERSION}" ]]; then 
+        build_cmd="${build_cmd} -t ${DEFAULT_IMAGE_GROUP}/${ARG_TAG}:${ARG_VERSION}"; 
+    fi
+
+    build_cmd="${build_cmd} ${ARG_SRC_PATH}"
+    log_info "executing: ${build_cmd}"
+    eval "$build_cmd"
+}
+
+function usage_details() {
+    script_name=`basename "$0"`
+    echo "[Usage] ${script_name} <image_src_dir>"
+    echo "[Options]"
+    echo "--label      label of the image"
+    echo "--version    version of the image"
     echo ""
+    echo "example:"
+    echo "${script_name} core/debian --tag=debian --version=latest"
 }
 
-images=("hs-debian" "hs-debian-jre8" "hs-hdfs-core" "hs-hdfs-namenode")
+if [[ $# -lt 1 ]]; then
+    log_error "Invalid invocation, Please see the usage below"
+    usage_details
+    exit 1;
+fi
 
-show_image_list() {
-    choice=0
-    log "INFO" "Select Image:"
-    index=0
-    for image in ${images[@]}; do
-        ((index++))
-        log "INFO" "\t${index}. ${image}"
-    done
-}
+if [[ -d "${BUILD_HOME_DIR}/${1}" ]]; then
+    ARG_SRC_PATH=${BUILD_HOME_DIR}/${1}
+    log_info "ARG_SRC_PATH=${ARG_SRC_PATH}"
+    shift
+else
+    log_error "Invalid path ${BUILD_HOME_DIR}/${1}"
+fi
 
-clean() {
-    log "INFO" "Cleaning ${1}"
-    eval "${BUILD_DIR}/${1}/build.sh clean"
-}
+while test $# -gt 0
+do
+    key=`echo "$1" | cut -d'=' -f 1`
+    value=`echo "$1" | cut -d'=' -f 2`
+    #debug "Key = $key , Value = $value"
+    case "$key" in
+        --label)
+                ARG_TAG=$value
+                echo "Setting label=${ARG_TAG}";
+            ;;
+        --version)
+                ARG_VERSION=$value
+                echo "Setting version=${ARG_VERSION}"
+            ;;
+        *)
+            log_error "Invalid arguments, Please see the usage below"
+            usage_details
+            exit 1;
+            ;;
+    esac
+    shift
+done
 
-build() {
-    log "INFO" "Building ${1}"
-    eval "${BUILD_DIR}/${1}/build.sh build"
-}
-
-clean_actions() {
-    if [ -z "$1" ]; then
-        for image in ${images[@]}; do
-            clean ${image}
-        done 
-    else
-       clean $1
-    fi
-}
-
-build_actions() {
-    if [ -z "$1" ]; then
-        for image in ${images[@]}; do
-            build ${image}
-        done 
-    else
-       build $1 
-    fi
-}
-
-show_help() {
-    echo "`basename "$0"` <clean|build> [name]"
-}
-
-case "$1" in
-    clean)
-        clean_actions $2;;
-    build)
-        build_actions $2;;
-    *)
-        log "ERROR" "Invalid action $1"; show_help;;
-esac
+build_image
 
