@@ -12,7 +12,6 @@ error_and_exit() {
 [[ -z "$OFFSET_STORAGE_TOPIC" ]] && error_and_exit "env OFFSET_STORAGE_TOPIC missing"
 [[ -z "$STATUS_STORAGE_TOPIC" ]] && error_and_exit "env STATUS_STORAGE_TOPIC missing"
 
-
 BROKER_COUNT=1
 
 if [[ "${KAFKA_BROKERS}" == *",*" ]]; then
@@ -52,6 +51,15 @@ echo "status.storage.topic=${STATUS_STORAGE_TOPIC}" >> $KAFKA_HOME/config/connec
 echo "plugin.path=${KAFKA_CONNECT_PLUGINS_DIR}" >> $KAFKA_HOME/config/connect-distributed.properties
 echo "key.converter=org.apache.kafka.connect.json.JsonConverter" >> $KAFKA_HOME/config/connect-distributed.properties
 echo "value.converter=org.apache.kafka.connect.json.JsonConverter" >> $KAFKA_HOME/config/connect-distributed.properties
+
+if [ ! -z "$PLUGINS" ]; then
+    echo "Will be creating topics once broker ready"
+    (
+        IFS=','; for plugin_name in $PLUGINS; do
+            /home/kafka/plugins/load_plugin.sh "${plugin_name}"
+        done
+    )&
+fi
 
 echo "Staring connect distributed....."
 exec $KAFKA_HOME/bin/connect-distributed.sh $KAFKA_HOME/config/connect-distributed.properties

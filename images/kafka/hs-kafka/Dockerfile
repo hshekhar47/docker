@@ -31,7 +31,8 @@ RUN yum -y update \
     && yum clean all \
     && echo "export KAFKA_HOME=${KAFKA_HOME}" >> /etc/profile \
     && mkdir -p /var/log/kafka \
-    && useradd -ms /bin/bash  ${UNAME} \
+    && useradd -ms /bin/bash ${UNAME} \
+    && usermod -a -G ${GNAME} ${UNAME} \
     && chown -R ${UNAME}:${UNAME} /etc/ /var/log/kafka /boot/ 
 
 USER ${UNAME}

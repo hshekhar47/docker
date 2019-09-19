@@ -2,8 +2,8 @@
 
 ## Build
 ```bash
-cd $PROJECT_DIR
-./build.sh
+cd $IMAGES_DIR
+./build.sh core/hs-centos
 ```
 
 ### Run
