@@ -1,0 +1,2 @@
+# Kafka Elasticsearch Connector
+Download the confluentic elasticsearch connector from [here](https://www.confluent.io/hub/#download), unzip and place all jars from `libs` directory into `connect/kafka-connect-elasticsearch`
