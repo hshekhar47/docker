@@ -5,7 +5,7 @@ LABEL "author"="Himanshu Shekhar <himanshu.shekhar.in@gmail.com>"
 ARG UNAME=deployer
 ARG GNAME=deployer 
 
-ENV JAVA_HOME=/usr/lib/jvm/jre-openjdk/
+ENV JAVA_HOME=/usr/lib/jvm/jre-openjdk
 
 USER root
 RUN yum -y update \
